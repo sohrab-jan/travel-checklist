@@ -2,7 +2,6 @@ import { useState } from "react";
 
 export default function App() {
   const [items, setItems] = useState([]);
-
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
@@ -10,6 +9,14 @@ export default function App() {
   function handleDeleteItem(id) {
     setItems((items) => items.filter((item) => item.id !== id));
   }
+
+  function handleClearList() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete all items?"
+    );
+    if (confirmed) setItems([]);
+  }
+
   function handleToggleItem(id) {
     setItems((items) =>
       items.map((item) =>
@@ -26,6 +33,7 @@ export default function App() {
         items={items}
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
+        onClearList={handleClearList}
       />
       <Stats items={items} />
     </div>
@@ -45,7 +53,6 @@ function Form({ onAddItems }) {
     if (!description) return;
 
     const newItem = { description, quantity, id: Date.now(), packed: false };
-    console.log(newItem);
 
     onAddItems(newItem);
 
@@ -79,7 +86,7 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items, onDeleteItem, onToggleItem }) {
+function PackingList({ items, onDeleteItem, onToggleItem, onClearList }) {
   const [sortBy, setSortBy] = useState("input");
 
   let sortedItems;
@@ -112,6 +119,9 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
           <option value="description">Sort By Description</option>
           <option value="packed">Sort By packed Status</option>
         </select>
+        <button class="button" onClick={() => onClearList}>
+          Clear List
+        </button>
       </div>
     </form>
   );
